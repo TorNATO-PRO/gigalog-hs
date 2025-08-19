@@ -5,7 +5,7 @@
 module Gigalog.Parser (parseProgram) where
 
 import Control.Monad (void)
-import Data.Char (isAlphaNum)
+import Data.Char (isAlphaNum, isUpper, isLower)
 import qualified Data.List.NonEmpty as NonEmpty
 import Data.Maybe (mapMaybe)
 import Data.Text (Text)
@@ -76,6 +76,28 @@ ident = label "identifier" $
     rest <- many (satisfy (\c -> isAlphaNum c || c == '_'))
     pure $ Text.pack (first:rest)
 
+lowerIdent :: Parser Text
+lowerIdent = label "lower identifier" $
+  lexeme $ do
+    h <- satisfy (\c -> isLower c || c == '_')
+    t <- many (satisfy (\c -> isAlphaNum c || c == '_'))
+    pure (Text.pack (h:t))
+
+upperIdent :: Parser Text
+upperIdent = label "upper identifier" $
+  lexeme $ do
+    h <- satisfy isUpper
+    t <- many (satisfy (\c -> isAlphaNum c || c == '_'))
+    pure (Text.pack (h:t))
+
+parseVariable :: Parser Term
+parseVariable =
+  label "variable" $
+    choice
+      [ questionMark >> (TVar . VarName <$> (lowerIdent <|> upperIdent))
+      , TVar . VarName <$> upperIdent
+      ]
+
 stringLiteral :: Parser Text
 stringLiteral = label "String literal" $ lexeme $ Text.pack <$> (char '\"' *> manyTill L.charLiteral (char '\"'))
 
@@ -84,19 +106,11 @@ parseTerm = label "term" $ lexeme $ do
   -- a term is either a variable or a string
   try parseVariable <|> (TSym <$> parseSymbol)
 
-parseVariable :: Parser Term
-parseVariable =
-  label "variable" $
-    choice
-      [ questionMark >> (\i -> TVar $ VarName ("?" <> i)) <$> ident,
-        TVar . VarName <$> ident
-      ]
-
 betweenParentheses :: Parser a -> Parser a
 betweenParentheses = between (symbol "(") (symbol ")")
 
 parseSymbol :: Parser Symbol
-parseSymbol = label "Symbol" $ lexeme $ Symbol <$> (stringLiteral <|> ident)
+parseSymbol = label "Symbol" $ lexeme $ Symbol <$> (stringLiteral <|> lowerIdent)
 
 parseAtom :: Parser Atom
 parseAtom = label "Atom" $ do
