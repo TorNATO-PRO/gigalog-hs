@@ -8,7 +8,8 @@ module Gigalog.Evaluator (Row (..), evaluate, EvaluationEnv (..)) where
 
 import Control.Monad (foldM)
 import Control.Monad.Trans.Except (Except, throwE)
-import Data.Foldable (toList)
+import Control.Parallel.Strategies (using, parList, rdeepseq, parListChunk)
+import Data.Foldable (toList, Foldable (foldl'))
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NonEmpty
 import qualified Data.Map.Strict as Map
@@ -56,7 +57,7 @@ initializeDB program@(Program { facts, rules }) =
 
       -- obtain all of the EDB facts
       edbEntries =
-        foldl
+        foldl'
           ( \m (Fact p syms) ->
               Map.insertWith Set.union p (Set.singleton (Row syms)) m
           )
@@ -175,14 +176,23 @@ seminaiveJoin :: Set.Set PredName
   -> Tables
   -> Rule
   -> Except T.Text (Set Bindings)
-seminaiveJoin idb fullTbl deltaTbl rule = Set.unions . map joinBody <$> seminaiveJoinPlan idb fullTbl deltaTbl rule 
+seminaiveJoin idb fullTbl deltaTbl rule = do
+  plans <- seminaiveJoinPlan idb fullTbl deltaTbl rule
+  let parts = map joinBody plans `using` parListChunk greenThreads rdeepseq
+  pure (Set.unions parts)
 
 joinBody :: [(Atom, Set Row)] -> Set Bindings
-joinBody = foldl step (Set.singleton Map.empty)
+joinBody = foldl' step (Set.singleton Map.empty)
   where
+    {-# INLINE step #-}
     step acc (atom, rows) =
-      Set.unions [ unifyAtom rows atom b | b <- Set.toList acc ]
+      let bindings = Set.toList acc
+          chunks = map (unifyAtom rows atom) bindings
+                    `using` parListChunk greenThreads rdeepseq
+      in 
+      Set.unions chunks
 
+{-# INLINE unifyAtom #-}
 unifyAtom :: Set Row -> Atom -> Bindings -> Set Bindings
 unifyAtom rows atom bindings =
     let rowList = Set.toList rows
@@ -198,6 +208,7 @@ unifyAtom rows atom bindings =
       where
         step = unify
 
+    {-# INLINE unify #-}
     unify :: Bindings -> (Term, Symbol) -> Maybe Bindings
     unify b (t, s) = case t of
       TVar varName ->
@@ -221,3 +232,6 @@ evaluate :: Program -> Except T.Text EvaluationEnv
 evaluate program = do
   initialEnv <- initializeDB program
   solve program initialEnv
+
+greenThreads :: Int
+greenThreads = 512
