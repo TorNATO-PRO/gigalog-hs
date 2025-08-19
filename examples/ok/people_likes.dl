@@ -1,0 +1,6 @@
+person(alice).
+person(bob).
+likes(alice,pizza).
+likes(bob,pizza).
+
+friend(X,Y) :- likes(X,Z), likes(Y,Z).

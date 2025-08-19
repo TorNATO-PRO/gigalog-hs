@@ -1,0 +1,5 @@
+likes(alice,pizza).
+likes(bob,sushi).
+
+symLike(X,Y) :- likes(X,Y).
+symLike(X,Y) :- likes(Y,X).

@@ -1,0 +1,5 @@
+pair(a,b).
+pair(b,c).
+triple(a,b,c).
+
+first_of_pair(X) :- pair(X, _y).

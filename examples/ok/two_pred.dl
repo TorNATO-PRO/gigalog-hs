@@ -1,0 +1,6 @@
+parent(a,b). parent(b,c).
+edge(b,c).  edge(c,d).
+
+link(X,Y) :- parent(X,Y). // EDB-only rule
+follow(Z,W) :- edge(Z,W). // EDB-only rule
+pair(X,W) :- parent(X,Y), edge(Y,W). // Pair of EDB

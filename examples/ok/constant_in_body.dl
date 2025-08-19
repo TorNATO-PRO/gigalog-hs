@@ -1,0 +1,3 @@
+likes(alice,pizza). likes(bob,pizza). likes(bob,tacos).
+
+pizzaFan(X) :- likes(X,pizza).

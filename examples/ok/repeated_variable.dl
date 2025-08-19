@@ -1,0 +1,3 @@
+same(x,x). same(x,y). same(y,y).
+
+diag(A) :- same(A,A).
