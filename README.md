@@ -7,9 +7,10 @@ Gigalog supports **parallel** seminaive evaluation for now.
 
 ## Usage
 
-Right now, we are just reading datalog files from stdin and we don't support many datalog
-language features. Here is a sample program so you may get an idea of what is supported as I
-am too lazy to specify the specs!
+Currently, input is read from **stdin**. The parser accepts a *subset* of
+Datalog, chosen entirely by vibes. If you’re wondering what’s supported,
+please consult the following example program (since I was too lazy to
+actually write a specification):
 
 ```datalog
 // name this triangles.datalog
@@ -27,7 +28,7 @@ lt(e,f).
 path(X,Y) :- edge(X,Y).
 path(X,Z) :- path(X,Y), edge(Y,Z).
 
-triangle(X,Y,Z) :- edge(X,Y), edge(Y,Z), edge(Z,X), lt(X,Y), lt(Y,Z).
+triangle(X,Y,Z) :- edge(?X,Y), edge(Y,Z), edge(Z,?X), lt(?X,Y), lt(Y,Z).
 
 person(alice). person(bob). person(carol). person(dave). person(erin). person(frank).
 
