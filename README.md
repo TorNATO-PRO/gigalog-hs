@@ -21,7 +21,7 @@ please consult the following example program (since I was too lazy to
 actually write a specification):
 
 ```datalog
-// name this triangles.datalog
+// you can find this in examples/ok/triangles.dl
 edge(a,b). edge(b,c). edge(c,a).
 edge(b,d). edge(d,e). edge(e,b).
 edge(c,d). edge(e,f).

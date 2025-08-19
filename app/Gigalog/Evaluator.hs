@@ -4,7 +4,7 @@
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE BlockArguments #-}
 
-module Gigalog.Evaluator (Row (..), evaluate, EvaluationEnv (..)) where
+module Gigalog.Evaluator (evaluate, EvaluationEnv (..)) where
 
 import Control.Monad (foldM)
 import Control.Monad.Trans.Except (Except, throwE)
