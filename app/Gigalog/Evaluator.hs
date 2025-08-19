@@ -8,7 +8,7 @@ module Gigalog.Evaluator (Row (..), evaluate, EvaluationEnv (..)) where
 
 import Control.Monad (foldM)
 import Control.Monad.Trans.Except (Except, throwE)
-import Control.Parallel.Strategies (using, parList, rdeepseq, parListChunk)
+import Control.Parallel.Strategies (using, rdeepseq, parListChunk)
 import Data.Foldable (toList, Foldable (foldl'))
 import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NonEmpty
