@@ -1,1 +1,32 @@
 /.history
+
+# Build artifacts
+dist/
+dist-newstyle/
+.stack-work/
+cabal-dev/
+
+# Object and interface files
+*.o
+*.hi
+*.chi
+*.chs.h
+*.dyn_o
+*.dyn_hi
+
+# HPC coverage
+.hpc/
+
+# Editor and IDE specific files
+.ghci
+.vscode/
+.idea/
+*.swp
+*~
+
+# Generated documentation
+doc/
+html/
+
+# Log files
+*.log
