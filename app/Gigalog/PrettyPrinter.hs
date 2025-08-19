@@ -27,7 +27,7 @@ displayTables tables =
               cells = map rowToCells (Set.toAscList rows)
               arity = maybe 0 length (safeHead cells)
               header = p <> "/" <> T.pack (show arity) <> " (" <> T.pack (show (Set.size rows)) <> " rows)"
-           in header <> "\n" <> boxTable cells
+           in header <> "\n" <> if length cells <= 1000 then boxTable cells else ""
 
     rowToCells :: Row -> [T.Text]
     rowToCells (Row syms) = [s | Symbol s <- map getSym (NE.toList syms)]
