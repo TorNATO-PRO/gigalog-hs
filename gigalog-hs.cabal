@@ -75,7 +75,7 @@ executable gigalog-hs
 
     -- Other library packages from which modules are imported.
     build-depends:
-        base ^>=4.17.2.1,
+        base >= 4.17 && < 4.22,
         megaparsec == 9.7.0,
         text ^>= 2.1,
         containers ^>= 0.7,
