@@ -7,6 +7,14 @@ Gigalog supports **parallel** seminaive evaluation for now.
 
 ## Usage
 
+### Running
+
+I could talk all day, but essentially what you wanna do is
+
+`cabal run gigalog -- +RTS -N -RTS < examples/ok/triangles.dl`
+
+### Features
+
 Currently, input is read from **stdin**. The parser accepts a *subset* of
 Datalog, chosen entirely by vibes. If you’re wondering what’s supported,
 please consult the following example program (since I was too lazy to
