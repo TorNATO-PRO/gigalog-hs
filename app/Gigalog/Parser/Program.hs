@@ -26,7 +26,7 @@ import Text.Megaparsec
     (<?>),
     (<|>),
   )
-import Gigalog.Parser.Common (upperIdent, parseSymbol, lowerIdent, ident, Parser, lexeme, symbol, parens, comma, period)
+import Gigalog.Parser.Common (upperIdent, parseSymbol, lowerIdent, ident, Parser, lexeme, symbol, parens, comma, period, sc)
 import Gigalog.Parser.Fact (parseFact)
 import qualified Data.Set as Set
 
@@ -85,6 +85,7 @@ parseFactOrRule = (Left <$> try parseRule) <|> (Right <$> parseFact)
 
 parseProgram :: Parser Program
 parseProgram = do
+  sc
   factsOrRules <- manyTill parseFactOrRule eof
 
   -- extract all the facts
