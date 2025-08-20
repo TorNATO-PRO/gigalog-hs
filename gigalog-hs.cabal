@@ -67,8 +67,11 @@ executable gigalog
         Gigalog.Data.Common,
         Gigalog.PrettyPrinter,
         Gigalog.Evaluator,
-        Gigalog.Parser,
-        Gigalog.Validator
+        Gigalog.Parser.Fact,
+        Gigalog.Parser.Program,
+        Gigalog.Parser.Common,
+        Gigalog.Validator,
+        Gigalog.CLI
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
@@ -81,7 +84,13 @@ executable gigalog
         containers ^>= 0.7,
         transformers ^>= 0.6,
         either ^>= 5.0,
-        parallel ^>= 3.2
+        parallel ^>= 3.2,
+        optparse-applicative ^>= 0.19.0.0,
+        http-conduit ^>= 2.3.9,
+        bytestring ^>= 0.12.2.0,
+        case-insensitive ^>= 1.2.1.0,
+        cassava ^>= 0.5.4.0,
+        vector ^>= 0.13.2.0
 
     -- Directories containing source files.
     hs-source-dirs:   app

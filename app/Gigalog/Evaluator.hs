@@ -40,13 +40,17 @@ data EvaluationEnv = EvaluationEnv
 initializeDB :: Program -> Except T.Text EvaluationEnv
 initializeDB program@(Program { facts, rules }) =
   let -- all of the predicate names for facts
-      factPredicates = Set.fromList [p | Fact p _ <- facts]
+      factsList = Set.toList facts
+
+      rulesList = Set.toList rules
+
+      factPredicates = Set.fromList [p | Fact p _ <- factsList]
 
       -- a set of body predicate names
-      bodies = Set.fromList [p | Rule _ body <- rules, Atom p _ <- toList body]
+      bodies = Set.fromList [p | Rule _ body <- rulesList, Atom p _ <- toList body]
 
       -- the IDB is essentially all rules that appear in some rule head
-      idb = Set.fromList [p | Rule (Atom p _) _ <- rules]
+      idb = Set.fromList [p | Rule (Atom p _) _ <- rulesList]
 
       -- the EDB is essentially all predicates with a corresponding
       -- fact that don't appear in the rule head
@@ -147,7 +151,7 @@ seminaiveStep (Program { rules }) (EvaluationEnv { full, delta, idbPredicates, e
   let fullDB = Map.unionWith Set.union full delta
 
   -- we need to join the stuff for the rules
-  bindingRulePairs <- for rules \rule@(Rule (Atom predName ruleTerms) _) -> do
+  bindingRulePairs <- for (Set.toList rules) \rule@(Rule (Atom predName ruleTerms) _) -> do
     bindings <- seminaiveJoin idbPredicates full delta rule
     newRows <- projectHead bindings ruleTerms
     pure (predName, newRows)

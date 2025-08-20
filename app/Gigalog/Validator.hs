@@ -40,8 +40,8 @@ renameVariables (Program facts rules) = do
         let (r', env') = runState (renameRule r) (RenameEnv c Map.empty)
         put (counter env')
         pure r'
-  let newRules = evalState (traverse step rules) 0
-  pure $ Program facts newRules
+  let newRules = evalState (traverse step (Set.toList rules)) 0
+  pure $ Program facts $ Set.fromList newRules
   where
     renameRule :: Rule -> State RenameEnv Rule
     renameRule (Rule ruleHead body) = do
