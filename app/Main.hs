@@ -9,7 +9,7 @@
 
 module Main (main) where
 
-import Control.Monad.Trans.Except (ExceptT (ExceptT, runExceptT), withExceptT, Except, runExcept)
+import Control.Monad.Trans.Except (ExceptT (..), withExceptT, Except, runExcept)
 import Data.Bifunctor (Bifunctor (first))
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as B8

@@ -82,7 +82,7 @@ executable gigalog
         megaparsec == 9.7.0,
         text ^>= 2.1,
         containers ^>= 0.7,
-        transformers ^>= 0.6,
+        transformers == 0.6.2.0,
         either ^>= 5.0,
         parallel ^>= 3.2,
         optparse-applicative ^>= 0.19.0.0,
