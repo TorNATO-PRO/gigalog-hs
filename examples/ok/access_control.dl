@@ -1,0 +1,48 @@
+/* A simple RBAC example using Datalog */
+
+// ===== ENTITIES =====
+User("alice").
+User("bob").
+User("nathan").
+Role("case-worker").
+Role("accountant").
+Role("administrator").
+
+Page("/reports").
+Page("/person").
+Page("/admin").
+
+PersonRecord("alice").
+PersonRecord("bob").
+
+// Resource typing
+ResourceType(Resource,"page") :- Page(Resource).
+ResourceType(Resource,"person") :- PersonRecord(Resource).
+
+// ===== ROLE ASSIGNMENTS =====
+HasRole("alice","accountant").
+HasRole("bob","case-worker").
+HasRole("nathan","administrator").
+
+// ===== ROLE → PERMISSIONS =====
+RolePerm("administrator","page","edit").
+RolePerm("administrator","person","edit").
+RolePerm("accountant","page","view").
+RolePerm("accountant","page","view").
+RolePerm("case-worker","person","view").
+RolePerm("case-worker","person","edit").
+
+// ===== CORE RBAC =====
+Allowed(User,Resource,Action) :-
+  HasRole(User,Role),
+  RolePerm(Role,ResourceType,Action),
+  ResourceType(Resource,ResourceType).
+
+// Convenience: “edit” implies “view”
+Allowed(User,Resource,"view") :-
+  Allowed(User,Resource,"edit").
+
+Allowed(User,Resource,Action) :-
+  Person(Resource),
+  HasRole(User,Role),
+  RolePerm(Role,"person",Action).

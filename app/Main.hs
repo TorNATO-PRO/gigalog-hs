@@ -46,7 +46,7 @@ loadProgram headers src = do
   where
     displaySrc = \case
       Stdin -> "<stdin>"
-      File fp -> "<" <> fp <> ">ß"
+      File fp -> "<" <> fp <> ">"
       Url dst -> "<" <> dst <> ">"
 
 loadFacts ::  [(T.Text, T.Text)] -> [(PredName, Source)] -> ExceptT T.Text IO (Set Fact)
